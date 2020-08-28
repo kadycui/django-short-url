@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <title>短url</title>
+</head>
+<body>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <form action="" method="post" id="form">
+            {% csrf_token %}
+            <h1 style="text-align: center">短url</h1>
+            <hr>
+
+            <div class="span12">
+                <div class="tabbable" id="tabs-149852">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#panel-24341" data-toggle="tab">缩短网址</a>
+                        </li>
+                        <li>
+                            <a href="#panel-186783" data-toggle="tab">还原网址</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="panel-24341">
+                            <br>
+                            <div class="form-group">
+                                <label for="long" class="sr-only">缩短网址</label>
+                                <input type="text" class="form-control" id="long"
+                                       placeholder="缩短网址">
+                                <br>
+                                <button type="button" class="btn btn-primary" id="but_add">缩短网址</button>
+                            </div>
+
+
+                            <div class="form-inline">
+                                <p class="form-control-static">有效期：</p>
+                                <select class="form-control" id="period">
+                                    <option value="一年期">一年期</option>
+                                    <option value="长期">长期</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="panel-186783">
+                            <br>
+                            <form class="form-inline">
+                                <label for="short" class="sr-only">还原网址</label>
+                                <input type="text" class="form-control" id="short"
+                                       placeholder="还原网址">
+                                <br>
+                                <button type="button" class="btn btn-primary" id="but_restore">还原网址</button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+<script src="/static/js/jquery-3.3.1.js"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+
+<script>
+    $("#but_add").click(function () {
+
+        var formdata={"long":$("#long").val(),"period":$("#period").val(),"csrfmiddlewaretoken":"{{ csrf_token }}"}
+        console.log(formdata);
+
+        $.ajax({
+            url: "/app/addShortUrl",
+            type: "post",
+            data: formdata,
+            success: function (data) {
+                if (data.status == 100) {
+                    var  a = document.createElement('a');
+                    a.href = location.href+data.msg;
+                    alert(a)
+                } else {
+                    alert(data.msg);
+                }
+            }
+
+        })
+    });
+    $("#but_restore").click(function () {
+
+        var formdata={"short":$("#short").val(),"csrfmiddlewaretoken":"{{ csrf_token }}"};
+        console.log(formdata);
+
+        $.ajax({
+            url: "/app/restoreUrl",
+            type: "post",
+            data: formdata,
+            success: function (data) {
+                if (data.status == 100) {
+                    alert(data.msg);
+                } else {
+                    alert(data.msg);
+                }
+            }
+
+        })
+    })
+</script>
+</html>
